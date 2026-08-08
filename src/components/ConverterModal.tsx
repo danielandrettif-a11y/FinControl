@@ -31,7 +31,6 @@ export default function ConverterModal({ onClose }: { onClose: () => void }) {
           EURBRL: parseFloat(data.EURBRL.bid),
           BTCBRL: parseFloat(data.BTCBRL.bid),
         });
-        setLastUpdated(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
       }
     } catch (e) {
       console.error('Failed to fetch rates', e);
