@@ -81,11 +81,11 @@ app.use(cors());
 app.use(express.json());
 
 // Auth Middleware
-const authMiddleware = (req: any, res: any, next: any) => {
+const authMiddleware = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'No token provided' });
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const decoded = jwt.verify(token, JWT_SECRET);
     req.userId = decoded.id;
     next();
   } catch (err) {
@@ -110,7 +110,7 @@ app.post('/api/auth/register', async (req, res) => {
 
 app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
-  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as any;
+  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
   if (!user) return res.status(401).json({ error: 'Invalid credentials' });
   
   const isValid = await bcrypt.compare(password, user.passwordHash);
@@ -121,12 +121,12 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // --- DATA ROUTES ---
-app.get('/api/data', authMiddleware, (req: any, res: any) => {
+app.get('/api/data', authMiddleware, (req, res) => {
   try {
     const userId = req.userId;
     const settings = db.prepare('SELECT * FROM settings WHERE userId = ?').get(userId);
-    const creditCards = db.prepare('SELECT * FROM credit_cards WHERE userId = ?').all(userId) as any[];
-    const cryptoCards = db.prepare('SELECT * FROM crypto_cards WHERE userId = ?').all(userId) as any[];
+    const creditCards = db.prepare('SELECT * FROM credit_cards WHERE userId = ?').all(userId);
+    const cryptoCards = db.prepare('SELECT * FROM crypto_cards WHERE userId = ?').all(userId);
 
     // Attach transactions to each card
     for (const card of creditCards) {
@@ -143,7 +143,7 @@ app.get('/api/data', authMiddleware, (req: any, res: any) => {
   }
 });
 
-app.post('/api/settings', authMiddleware, (req: any, res: any) => {
+app.post('/api/settings', authMiddleware, (req, res) => {
   try {
     const { monthlyLimit, exchangeRateUsdBrl } = req.body;
     db.prepare('UPDATE settings SET monthlyLimit = ?, exchangeRateUsdBrl = ? WHERE userId = ?')
