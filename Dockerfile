@@ -1,5 +1,8 @@
 FROM node:20-alpine
 
+# Install OpenSSL and libc6-compat for Prisma engine on Alpine
+RUN apk add --no-cache openssl libc6-compat
+
 WORKDIR /app
 
 # Copy package files
@@ -19,5 +22,5 @@ RUN npm run build
 # Expose default port 3000
 EXPOSE 3000
 
-# Start the server (which now serves the API and the static frontend)
-CMD ["npx", "tsx", "server.ts"]
+# Push DB schema on startup to create tables in SQLite and start the server
+CMD ["sh", "-c", "npx prisma db push && npx tsx server.ts"]
