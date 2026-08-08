@@ -173,7 +173,7 @@ cron.schedule('*/10 * * * *', async () => {
 
 // Serve frontend static files
 app.use(express.static(path.join(process.cwd(), 'dist')));
-app.get('*', (req, res) => {
+app.use((req, res) => {
   res.sendFile(path.join(process.cwd(), 'dist', 'index.html'));
 });
 
