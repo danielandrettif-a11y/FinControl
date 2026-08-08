@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String       @id @default(uuid())
+  email        String       @unique
+  passwordHash String
+  createdAt    DateTime     @default(now())
+  
+  settings     Settings?
+  creditCards  CreditCard[]
+  cryptoCards  CryptoCard[]
+}
+
+model Settings {
+  id                 String @id @default(uuid())
+  userId             String @unique
+  monthlyLimit       Float
+  exchangeRateUsdBrl Float
+
+  user               User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CreditCard {
+  id           String   @id @default(uuid())
+  userId       String
+  name         String
+  institution  String
+  brand        String
+  last4Digits  String
+  color        String
+  gradientEnd  String?
+  totalLimit   Float
+  closingDay   Int
+  dueDay       Int
+  isActive     Boolean  @default(true)
+  imageUrl     String?
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions CreditCardTransaction[]
+}
+
+model CreditCardTransaction {
+  id            String   @id @default(uuid())
+  creditCardId  String
+  description   String
+  categoryId    String
+  amount        Float
+  date          DateTime
+  installments  Int      @default(1)
+  notes         String?
+
+  creditCard    CreditCard @relation(fields: [creditCardId], references: [id], onDelete: Cascade)
+}
+
+model CryptoCard {
+  id           String   @id @default(uuid())
+  userId       String
+  name         String
+  institution  String
+  color        String
+  gradientEnd  String?
+  mainCurrency String
+  isActive     Boolean  @default(true)
+  imageUrl     String?
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topUps       CryptoTopUp[]
+  transactions CryptoTransaction[]
+}
+
+model CryptoTopUp {
+  id            String   @id @default(uuid())
+  cryptoCardId  String
+  amountUsd     Float
+  amountBrl     Float
+  exchangeRate  Float
+  date          DateTime
+
+  cryptoCard    CryptoCard @relation(fields: [cryptoCardId], references: [id], onDelete: Cascade)
+}
+
+model CryptoTransaction {
+  id            String   @id @default(uuid())
+  cryptoCardId  String
+  description   String
+  categoryId    String
+  amountUsd     Float
+  date          DateTime
+
+  cryptoCard    CryptoCard @relation(fields: [cryptoCardId], references: [id], onDelete: Cascade)
+}
