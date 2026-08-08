@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/better-sqlite3": "^9.6.0",
     "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
@@ -23,7 +25,6 @@
     "sqlite3": "^6.0.1"
   },
   "devDependencies": {
-    "@prisma/client": "^6.0.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
@@ -34,7 +35,6 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
     "oxlint": "^1.75.0",
-    "prisma": "^6.0.0",
     "tsx": "^4.23.11",
     "typescript": "~6.0.2",
     "vite": "^8.2.0"
