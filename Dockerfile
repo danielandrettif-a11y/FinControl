@@ -16,8 +16,8 @@ COPY . .
 # Build the frontend (Vite)
 RUN npm run build
 
-# Expose port 3001
-EXPOSE 3001
+# Expose default port 3000
+EXPOSE 3000
 
 # Start the server (which now serves the API and the static frontend)
 CMD ["npx", "tsx", "server.ts"]
