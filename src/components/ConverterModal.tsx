@@ -10,7 +10,6 @@ interface Rates {
 export default function ConverterModal({ onClose }: { onClose: () => void }) {
   const [rates, setRates] = useState<Rates | null>(null);
   const [loading, setLoading] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState<string>('');
 
   // Values in string format to allow decimal typing
   const [values, setValues] = useState({

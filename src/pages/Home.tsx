@@ -7,7 +7,7 @@ import {
   getSpendingPercent, getSpendingStatus,
 } from '../utils/finance';
 import { formatBrl, convertBrlToUsd, formatUsd } from '../utils/currency';
-import { TrendingUp, CreditCard, Wallet, Target, PiggyBank, FileText, BarChart3, CalendarClock, Calculator } from 'lucide-react';
+import { TrendingUp, CreditCard, Target, PiggyBank, FileText, BarChart3, CalendarClock, Calculator } from 'lucide-react';
 import ConverterModal from '../components/ConverterModal';
 
 const now = new Date();

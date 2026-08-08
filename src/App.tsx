@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { Routes, Route, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Home as HomeIcon, CreditCard, Plus, BarChart3, Menu, Settings } from 'lucide-react';
 import type {
@@ -7,8 +7,6 @@ import type {
 } from './types';
 import {
   DEFAULT_SETTINGS, DEFAULT_CATEGORIES,
-  INITIAL_CREDIT_CARDS, INITIAL_CRYPTO_CARDS,
-  INITIAL_CREDIT_TRANSACTIONS, INITIAL_CRYPTO_TOPUPS, INITIAL_CRYPTO_TRANSACTIONS,
 } from './data';
 import { generateInstallments } from './utils/finance';
 import HomePage from './pages/Home';
