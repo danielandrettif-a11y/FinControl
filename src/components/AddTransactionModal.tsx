@@ -11,7 +11,7 @@ export default function AddTransactionModal({ onClose, defaultCardId, editTransa
   const [date, setDate] = useState(editTransaction ? new Date(editTransaction.date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10)); // YYYY-MM-DD
   const [installments, setInstallments] = useState(editTransaction ? String(editTransaction.installments) : '1');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!description.trim() || !amount || !cardId) return;
 
@@ -30,6 +30,20 @@ export default function AddTransactionModal({ onClose, defaultCardId, editTransa
       setCreditTransactions(prev => prev.map(t => t.id === editTransaction.id ? newTx : t));
     } else {
       setCreditTransactions(prev => [...prev, newTx]);
+      
+      const token = localStorage.getItem('fincontrol_token');
+      try {
+        await fetch('/api/transactions/credit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(newTx)
+        });
+      } catch (err) {
+        console.error('Failed to save transaction to DB', err);
+      }
     }
     onClose();
   };

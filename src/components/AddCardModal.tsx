@@ -28,7 +28,7 @@ export default function AddCardModal({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
@@ -47,6 +47,21 @@ export default function AddCardModal({ onClose }: { onClose: () => void }) {
     };
 
     setCreditCards((prev) => [...prev, newCard]);
+    
+    const token = localStorage.getItem('fincontrol_token');
+    try {
+      await fetch('/api/cards/credit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(newCard)
+      });
+    } catch (err) {
+      console.error('Failed to save credit card to DB', err);
+    }
+    
     onClose();
   };
 

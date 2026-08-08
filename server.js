@@ -155,6 +155,58 @@ app.post('/api/settings', authMiddleware, (req, res) => {
   }
 });
 
+app.post('/api/cards/credit', authMiddleware, (req, res) => {
+  try {
+    const { id, name, institution, brand, last4Digits, color, totalLimit, closingDay, dueDay } = req.body;
+    db.prepare(`
+      INSERT INTO credit_cards (id, userId, name, institution, brand, last4Digits, color, totalLimit, closingDay, dueDay, isActive)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(id, req.userId, name, institution, brand, last4Digits, color, totalLimit, closingDay, dueDay, 1);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create credit card' });
+  }
+});
+
+app.post('/api/cards/crypto', authMiddleware, (req, res) => {
+  try {
+    const { id, name, institution, color, mainCurrency } = req.body;
+    db.prepare(`
+      INSERT INTO crypto_cards (id, userId, name, institution, color, mainCurrency, isActive)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(id, req.userId, name, institution, color, mainCurrency, 1);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create crypto card' });
+  }
+});
+
+app.post('/api/transactions/credit', authMiddleware, (req, res) => {
+  try {
+    const { id, creditCardId, description, categoryId, amount, date, installments } = req.body;
+    db.prepare(`
+      INSERT INTO credit_transactions (id, cardId, description, categoryId, amount, date, installments)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(id, creditCardId, description, categoryId, amount, date, installments);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create credit transaction' });
+  }
+});
+
+app.post('/api/transactions/crypto', authMiddleware, (req, res) => {
+  try {
+    const { id, cryptoCardId, description, categoryId, amountUSD, amountBTC, amountBRL, date } = req.body;
+    db.prepare(`
+      INSERT INTO crypto_transactions (id, cardId, description, categoryId, amountUSD, amountBTC, amountBRL, date)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(id, cryptoCardId, description, categoryId, amountUSD, amountBTC, amountBRL, date);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create crypto transaction' });
+  }
+});
+
 // --- CRON JOB ---
 cron.schedule('*/10 * * * *', async () => {
   console.log('[Cron] Fetching real-time rates...');

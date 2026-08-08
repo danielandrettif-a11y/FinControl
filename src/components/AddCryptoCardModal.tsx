@@ -21,11 +21,11 @@ export default function AddCryptoCardModal({ onClose }: { onClose: () => void })
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
-    setCryptoCards((prev) => [...prev, {
+    const newCard = {
       id: name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now(),
       name: name.trim(),
       institution: institution.trim() || name.trim(),
@@ -33,7 +33,24 @@ export default function AddCryptoCardModal({ onClose }: { onClose: () => void })
       mainCurrency: 'USD' as const,
       isActive: true,
       imageUrl,
-    }]);
+    };
+
+    setCryptoCards((prev) => [...prev, newCard]);
+
+    const token = localStorage.getItem('fincontrol_token');
+    try {
+      await fetch('/api/cards/crypto', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(newCard)
+      });
+    } catch (err) {
+      console.error('Failed to save crypto card to DB', err);
+    }
+    
     onClose();
   };
 

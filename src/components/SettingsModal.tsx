@@ -24,7 +24,7 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newLimit = parseFloat(limit);
     const newRate = parseFloat(rate);
@@ -34,6 +34,21 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
         monthlyLimit: newLimit,
         exchangeRateUsdBrl: newRate,
       });
+      
+      const token = localStorage.getItem('fincontrol_token');
+      try {
+        await fetch('/api/settings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ monthlyLimit: newLimit, exchangeRateUsdBrl: newRate })
+        });
+      } catch (err) {
+        console.error('Failed to save settings to DB', err);
+      }
+      
       onClose();
     }
   };
