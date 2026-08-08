@@ -5,15 +5,15 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import cron from 'node-cron';
 import path from 'path';
-import Database from 'better-sqlite3';
+import { DatabaseSync } from 'node:sqlite';
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_key_ponytail';
 
-// ponytail: better-sqlite3 instead of Prisma — zero native binary drama on Alpine
-const db = new Database(path.join(process.cwd(), 'data.db'));
-db.pragma('journal_mode = WAL');
+// ponytail: node:sqlite native module instead of better-sqlite3 — zero compilation, zero segfaults
+const db = new DatabaseSync(path.join(process.cwd(), 'data.db'));
+db.exec('PRAGMA journal_mode = WAL;');
 
 // Create tables
 db.exec(`
